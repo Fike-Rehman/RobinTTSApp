@@ -1,0 +1,49 @@
+/* Main container for the home page */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Header Section */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    /* Full width */
+    height: 80px;
+    /* Adjust as needed */
+    background: linear-gradient(to right, #333, #222);
+    /* Dark gradient */
+    padding: 0 20px;
+    color: #ff9800;
+}
+
+/* Logo Container (Left) */
+.logo-container {
+    display: flex;
+    /* Takes up available space */
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Voice Character Container (Right) */
+.voice-character-container {
+    display: flex;
+    /* Takes up available space */
+    text-align: right;
+    /* Aligns text to the right */
+    font-size: 1.2rem;
+}
+
+/* Content Section */
+.content-section {
+    width: 100%;
+    background: #1a1a1a;
+    color: white;
+    padding: 20px;
+    overflow-y: auto;
+}

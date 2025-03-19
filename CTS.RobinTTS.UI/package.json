@@ -10,7 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/styled-engine": "^5.16.14",
+    "@mui/x-data-grid": "^7.27.3",
     "axios": "^1.7.9",
+    "install": "^0.13.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
