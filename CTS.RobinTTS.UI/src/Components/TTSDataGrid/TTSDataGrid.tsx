@@ -2,13 +2,41 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
 import { Box, Checkbox, MenuItem, Select, Typography } from "@mui/material";
 import { dataGridContainerStyles, dataGridStyles, titleStyles } from "./TTSDataGridStyles";
+import PlayAudioButton from "../PlayAudioButton/PlayAudioButton";
+import { PlayAudioButtonState } from "../../types";
+
+
 
 
 const voices = ["Dorothy", "George"];
 
-const initialRows = [
-    { id: 1, script: "Hello world", voice: "Dorothy", accept: false, progress: "", download: "" },
-    { id: 2, script: "How are you", voice: "George", accept: false, progress: "", download: "" },
+export interface RowData {
+    id: number;
+    script: string;
+    voice: string;
+    accept: boolean;
+    status: PlayAudioButtonState;
+    download: string;
+}
+
+const initialRows: RowData[] = [
+    {
+        id: 1,
+        script: "Hello world",
+        voice: "Dorothy",
+        accept: false,
+        status: "pending",
+        download: "",
+    },
+    {
+        id: 2,
+        script: "Here I am ",
+        voice: "George",
+        accept: false,
+        status: "pending",
+        download: "",
+    }
+    // ... other rows
 ];
 
 const TTSDataGrid = () => {
@@ -18,22 +46,30 @@ const TTSDataGrid = () => {
     const handleCheckboxChange = (id: number) => {
         setRows((prevRows) =>
             prevRows.map((row) =>
-                row.id === id ? { ...row, progress: "Generating..." } : row
+                row.id === id ? { ...row, accept: true, status: "generating" } : row
             )
         );
         setTimeout(() => {
             setRows((prevRows) =>
                 prevRows.map((row) =>
-                    row.id === id ? { ...row, progress: "done" } : row
+                    row.id === id ? { ...row, status: "ready" } : row
                 )
             );
-        }, 2000); // Simulate API call delay
+        }, 5000); // Simulate API call delay
     };
 
     const handleVoiceChange = (id: number, newVoice: string) => {
         setRows((prevRows) =>
             prevRows.map((row) => (row.id === id ? { ...row, voice: newVoice } : row))
         );
+    };
+
+    const handlePlayAudio = (id: number) => {
+        const row = rows.find((row) => row.id === id);
+        if (row) {
+            console.log("Playing audio for row:", row.id);
+            // Add logic to play the audio here
+        }
     };
 
     const columns: GridColDef[] = [
@@ -76,9 +112,16 @@ const TTSDataGrid = () => {
             )
         },
         {
-            field: "progress",
-            headerName: "Progress",
-            width: 100
+            field: "status",
+            headerName: "Status",
+            width: 150,
+            renderCell: (params) => (
+                <PlayAudioButton
+                    state={params.row.status}
+                    onClick={() => handlePlayAudio(params.row.id)}
+                />
+
+            )
         },
         {
             field: "download",
@@ -93,7 +136,6 @@ const TTSDataGrid = () => {
                 My Data Table
             </Typography>
             <DataGrid rows={rows} columns={columns} sx={dataGridStyles} />
-
         </Box>
     );
 };
