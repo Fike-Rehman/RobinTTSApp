@@ -12,3 +12,21 @@ export const getTestMessage = async () => {
         return null;
     }
 };
+
+// Function to generate audio and return the blob URL (without playing it)
+export const generateAudio = async (script: string, voiceName: string) => {
+    console.log("Generating audio...");
+    try {
+        const response = await axios.post(`${API_BASE_URL}/tts/generate`,
+            { Script: script, VoiceName: voiceName },
+            { responseType: "blob" } // Receive as binary blob
+        );
+
+        const audioBlob = new Blob([response.data], { type: "audio/mpeg" });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        return { audioBlob, audioUrl }; // This can be stored in the component state
+    } catch (error) {
+        console.error("Error generating audio:", error);
+        return null;
+    }
+};

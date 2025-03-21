@@ -4,9 +4,8 @@ import { Box, Checkbox, MenuItem, Select, Typography } from "@mui/material";
 import { dataGridContainerStyles, dataGridStyles, titleStyles } from "./TTSDataGridStyles";
 import PlayAudioButton from "../PlayAudioButton/PlayAudioButton";
 import { PlayAudioButtonState } from "../../types";
-
-
-
+import { generateAudio } from "../../services/api";
+import { playAudio } from "../../services/utils";
 
 const voices = ["Dorothy", "George"];
 
@@ -36,27 +35,47 @@ const initialRows: RowData[] = [
         status: "pending",
         download: "",
     }
-    // ... other rows
 ];
 
 const TTSDataGrid = () => {
 
     const [rows, setRows] = useState(initialRows);
+    const [audioUrl, setAudioUrl] = useState<string | null>(null);
+    const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
 
-    const handleCheckboxChange = (id: number) => {
+    const handleCheckboxChange = async (id: number) => {
         setRows((prevRows) =>
             prevRows.map((row) =>
                 row.id === id ? { ...row, accept: true, status: "generating" } : row
             )
         );
-        setTimeout(() => {
-            setRows((prevRows) =>
-                prevRows.map((row) =>
-                    row.id === id ? { ...row, status: "ready" } : row
-                )
-            );
-        }, 5000); // Simulate API call delay
+
+        const result = await generateAudio(rows[id - 1].script, rows[id - 1].voice);
+        if (result) {
+            setAudioUrl(result.audioUrl); // Store audio URL for playback
+            setAudioBlob(result.audioBlob); // Store blob for download
+        }
+        else {
+            console.error("Error generating audio.");
+        }
+        setRows((prevRows) =>
+            prevRows.map((row) =>
+                row.id === id ? { ...row, status: "ready" } : row
+            )
+        );
+        // setTimeout(() => {
+        //     setRows((prevRows) =>
+        //         prevRows.map((row) =>
+        //             row.id === id ? { ...row, status: "ready" } : row
+        //         )
+        //     );
+        // }, 5000); // Simulate API call delay
     };
+
+
+
+
+
 
     const handleVoiceChange = (id: number, newVoice: string) => {
         setRows((prevRows) =>
@@ -68,7 +87,8 @@ const TTSDataGrid = () => {
         const row = rows.find((row) => row.id === id);
         if (row) {
             console.log("Playing audio for row:", row.id);
-            // Add logic to play the audio here
+            console.log("Audio URL:", audioUrl);
+            playAudio(audioUrl!);
         }
     };
 

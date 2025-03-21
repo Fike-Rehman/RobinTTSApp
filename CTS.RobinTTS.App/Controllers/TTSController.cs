@@ -40,7 +40,7 @@ namespace RobinTTSApp.Controllers
                     return StatusCode(500, "Failed to generate audio file.");
                 }
 
-                var fileName = $"{Guid.NewGuid()}.wav";
+                var fileName = $"{Guid.NewGuid()}.mp3";
                 var filePath = Path.Combine(_audioOutputPath, fileName);
 
                 await System.IO.File.WriteAllBytesAsync(filePath, audioBytes);
