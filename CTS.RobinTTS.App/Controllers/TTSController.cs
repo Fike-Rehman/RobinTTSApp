@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RobinTTSApp.Models;
 using RobinTTSApp.Services;
+using System.Collections.Concurrent;
 
 namespace RobinTTSApp.Controllers
 {
@@ -11,19 +12,19 @@ namespace RobinTTSApp.Controllers
         private readonly ILogger<TTSController> _logger;
         private readonly ElevenLabsService _elevenLabsService;
 
-        private readonly string _audioOutputPath = Path.Combine(Directory.GetCurrentDirectory(), "GeneratedAudio");
+        private static readonly ConcurrentDictionary<string, byte[]> _audioCache = new();
 
         public TTSController(ILogger<TTSController> logger, ElevenLabsService elevenLabsService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _elevenLabsService = elevenLabsService ?? throw new ArgumentNullException(nameof(elevenLabsService));
-
-            if (!Directory.Exists(_audioOutputPath))
-            {
-                Directory.CreateDirectory(_audioOutputPath);
-            }
         }
 
+        /// <summary>
+        /// Generate audio from the given text script and voice name.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("generate")]
         public async Task<IActionResult> GenerateAudio([FromBody] TTSRequest request)
         {
@@ -40,24 +41,52 @@ namespace RobinTTSApp.Controllers
                     return StatusCode(500, "Failed to generate audio file.");
                 }
 
-                var fileName = $"{Guid.NewGuid()}.mp3";
-                var filePath = Path.Combine(_audioOutputPath, fileName);
+                // TODO: Save the audio file to a backend storage here if needed. Curently we are storing it in memory.
 
-                await System.IO.File.WriteAllBytesAsync(filePath, audioBytes);
+                var audioId = Guid.NewGuid().ToString();
 
-                _logger.LogInformation($"Audio file saved at {filePath}");
+                // Store the audio in memory
+                _audioCache[audioId] = audioBytes;
 
-                // return file stream to the front end
-                // return File(audioBytes, "audio/wav", "generated_audio.wav");
-                // for now we are just storing the audio file on the server
-                return Ok(new { Message = "Audio generated successfully", FilePath = filePath });
-
+                return Ok(new { Message = "Audio generated successfully", AudioId = audioId });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to generate audio file.");
                 return StatusCode(500, "Failed to generate audio file.");
             }
+        }
+
+        /// <summary>
+        /// Stream the audio file with the given audioId.
+        /// </summary>
+        /// <param name="audioId"></param>
+        /// <returns></returns>
+        [HttpGet("stream/{audioId}")]
+        public IActionResult StreamAudio(string audioId)
+        {
+            if (_audioCache.TryGetValue(audioId, out var audioBytes))
+            {
+                return File(audioBytes, "audio/wav");
+            }
+
+            return NotFound("Audio not found.");
+        }
+
+        /// <summary>
+        /// Download the audio file with the given audioId.
+        /// </summary>
+        /// <param name="audioId"></param>
+        /// <returns></returns>
+        [HttpGet("download/{audioId}")]
+        public IActionResult DownloadAudio(string audioId)
+        {
+            if (_audioCache.TryGetValue(audioId, out var audioBytes))
+            {
+                return File(audioBytes, "audio/wav", $"{audioId}.wav");
+            }
+
+            return NotFound("Audio not found.");
         }
     }
 }
