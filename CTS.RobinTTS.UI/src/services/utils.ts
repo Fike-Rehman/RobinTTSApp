@@ -10,7 +10,7 @@ export const playAudio = (audioUrl: string) => {
 };
 
 // Function to download an audio file from a given Blob
-export const downloadAudio = (audioBlob: Blob, fileName: string = "audio.mp3") => {
+export const downloadAudio = (audioBlob: Blob, fileName: string = "audio.wav") => {
     if (!audioBlob) {
         console.error("No audio available to download.");
         return;

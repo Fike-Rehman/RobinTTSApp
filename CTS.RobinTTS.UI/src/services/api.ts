@@ -30,3 +30,14 @@ export const generateAudio = async (script: string, voiceName: string) => {
         return null;
     }
 };
+
+// Function to play audio from a given blob URL
+// export const playAudio = (audioUrl: string) => {
+//     if (!audioUrl) {
+//         console.error("No audio URL available.");
+//         return;
+//     }
+
+//     const audio = new Audio(audioUrl);
+//     audio.play();
+// };

@@ -15,7 +15,8 @@ export interface RowData {
     voice: string;
     accept: boolean;
     status: PlayAudioButtonState;
-    download: string;
+    audioUrl: string | null;
+    audioBlob: Blob | null;
 }
 
 const initialRows: RowData[] = [
@@ -25,7 +26,8 @@ const initialRows: RowData[] = [
         voice: "Dorothy",
         accept: false,
         status: "pending",
-        download: "",
+        audioUrl: null,
+        audioBlob: null
     },
     {
         id: 2,
@@ -33,15 +35,14 @@ const initialRows: RowData[] = [
         voice: "George",
         accept: false,
         status: "pending",
-        download: "",
+        audioUrl: null,
+        audioBlob: null
     }
 ];
 
 const TTSDataGrid = () => {
 
     const [rows, setRows] = useState(initialRows);
-    const [audioUrl, setAudioUrl] = useState<string | null>(null);
-    const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
 
     const handleCheckboxChange = async (id: number) => {
         setRows((prevRows) =>
@@ -50,31 +51,40 @@ const TTSDataGrid = () => {
             )
         );
 
-        const result = await generateAudio(rows[id - 1].script, rows[id - 1].voice);
+        const row = rows.find((row) => row.id === id);
+        if (!row) return;
+
+        const result = await generateAudio(row.script, row.voice);
         if (result) {
-            setAudioUrl(result.audioUrl); // Store audio URL for playback
-            setAudioBlob(result.audioBlob); // Store blob for download
+            setRows((prevRows) =>
+                prevRows.map((row) =>
+                    row.id === id
+                        ? {
+                            ...row,
+                            status: "ready",
+                            audioUrl: result.audioUrl,  // Store in row
+                            audioBlob: result.audioBlob // Store in row
+                        }
+                        : row
+                )
+            );
+        } else {
+            // Failure: Roll back to "pending"
+            setRows((prevRows) =>
+                prevRows.map((row) =>
+                    row.id === id
+                        ? {
+                            ...row,
+                            status: "pending", // Roll back
+                            audioUrl: null,    // Clear
+                            audioBlob: null,   // Clear
+                        }
+                        : row
+                )
+            );
+            console.error(`Audio generation failed for row ${id}.`);
         }
-        else {
-            console.error("Error generating audio.");
-        }
-        setRows((prevRows) =>
-            prevRows.map((row) =>
-                row.id === id ? { ...row, status: "ready" } : row
-            )
-        );
-        // setTimeout(() => {
-        //     setRows((prevRows) =>
-        //         prevRows.map((row) =>
-        //             row.id === id ? { ...row, status: "ready" } : row
-        //         )
-        //     );
-        // }, 5000); // Simulate API call delay
     };
-
-
-
-
 
 
     const handleVoiceChange = (id: number, newVoice: string) => {
@@ -85,10 +95,10 @@ const TTSDataGrid = () => {
 
     const handlePlayAudio = (id: number) => {
         const row = rows.find((row) => row.id === id);
-        if (row) {
-            console.log("Playing audio for row:", row.id);
-            console.log("Audio URL:", audioUrl);
-            playAudio(audioUrl!);
+        if (row && row.audioUrl !== null) {  // Explicit null check
+            playAudio(row.audioUrl);
+        } else {
+            console.error("Audio not yet generated for row:", id);
         }
     };
 
@@ -143,11 +153,6 @@ const TTSDataGrid = () => {
 
             )
         },
-        {
-            field: "download",
-            headerName: "Download",
-            width: 100
-        }
     ];
 
     return (

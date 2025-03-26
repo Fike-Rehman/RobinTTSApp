@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RobinTTSApp.Models;
 using RobinTTSApp.Services;
-using System.Collections.Concurrent;
 
 namespace RobinTTSApp.Controllers
 {
@@ -12,7 +11,7 @@ namespace RobinTTSApp.Controllers
         private readonly ILogger<TTSController> _logger;
         private readonly ElevenLabsService _elevenLabsService;
 
-        private static readonly ConcurrentDictionary<string, byte[]> _audioCache = new();
+      // private static readonly ConcurrentDictionary<string, byte[]> _audioCache = new();
 
         public TTSController(ILogger<TTSController> logger, ElevenLabsService elevenLabsService)
         {
@@ -41,14 +40,14 @@ namespace RobinTTSApp.Controllers
                     return StatusCode(500, "Failed to generate audio file.");
                 }
 
-                // TODO: Save the audio file to a backend storage here if needed. Curently we are storing it in memory.
-
-                var audioId = Guid.NewGuid().ToString();
-
-                // Store the audio in memory
-                _audioCache[audioId] = audioBytes;
-
-                return Ok(new { Message = "Audio generated successfully", AudioId = audioId });
+                // TODO: save the audio to a backend store here if needed. Currently, we are just returning the audio as a stream.
+                // var audioId = Guid.NewGuid().ToString();
+                // _audioCache[audioId] = audioBytes;
+                //  return Ok(new { Message = "Audio generated successfully", AudioId = audioId });
+                
+                
+                // Return audio as a stream without saving to disk
+                return File(audioBytes, "audio/wav", $"{Guid.NewGuid()}.wav");
             }
             catch (Exception ex)
             {
@@ -57,36 +56,38 @@ namespace RobinTTSApp.Controllers
             }
         }
 
-        /// <summary>
-        /// Stream the audio file with the given audioId.
-        /// </summary>
-        /// <param name="audioId"></param>
-        /// <returns></returns>
-        [HttpGet("stream/{audioId}")]
-        public IActionResult StreamAudio(string audioId)
-        {
-            if (_audioCache.TryGetValue(audioId, out var audioBytes))
-            {
-                return File(audioBytes, "audio/wav");
-            }
+        // TODO: Implement the following endpoints if needed. This is for cases where the audio needs to be saved to a backend store.
 
-            return NotFound("Audio not found.");
-        }
+        ///// <summary>
+        ///// Stream the previously generated audio file with the given audioId.
+        ///// </summary>
+        ///// <param name = "audioId" ></ param >
+        ///// < returns ></ returns >
+        //[HttpGet("stream/{audioId}")]
+        //public IActionResult StreamAudio(string audioId)
+        //{
+        //    if (_audioCache.TryGetValue(audioId, out var audioBytes))
+        //    {
+        //        return File(audioBytes, "audio/wav");
+        //    }
 
-        /// <summary>
-        /// Download the audio file with the given audioId.
-        /// </summary>
-        /// <param name="audioId"></param>
-        /// <returns></returns>
-        [HttpGet("download/{audioId}")]
-        public IActionResult DownloadAudio(string audioId)
-        {
-            if (_audioCache.TryGetValue(audioId, out var audioBytes))
-            {
-                return File(audioBytes, "audio/wav", $"{audioId}.wav");
-            }
+        //    return NotFound("Audio not found.");
+        //}
 
-            return NotFound("Audio not found.");
-        }
+        ///// <summary>
+        ///// Download the previosuly generated audio file with the given audioId.
+        ///// </summary>
+        ///// <param name = "audioId" ></ param >
+        ///// < returns ></ returns >
+        //[HttpGet("download/{audioId}")]
+        //public IActionResult DownloadAudio(string audioId)
+        //{
+        //    if (_audioCache.TryGetValue(audioId, out var audioBytes))
+        //    {
+        //        return File(audioBytes, "audio/wav", $"{audioId}.wav");
+        //    }
+
+        //    return NotFound("Audio not found.");
+        //}
     }
 }
