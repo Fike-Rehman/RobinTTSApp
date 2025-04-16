@@ -14,9 +14,9 @@
     align-items: center;
     width: 100%;
     /* Full width */
-    height: 80px;
+    height: 120px;
     /* Adjust as needed */
-    background: linear-gradient(to right, #333, #222);
+    background: linear-gradient(to right, #717070, #222);
     /* Dark gradient */
     padding: 0 20px;
     color: #ff9800;
@@ -25,7 +25,6 @@
 /* Logo Container (Left) */
 .logo-container {
     display: flex;
-    /* Takes up available space */
     font-size: 1.5rem;
     font-weight: bold;
 }
