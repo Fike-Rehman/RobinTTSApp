@@ -1,23 +1,31 @@
-
-import "./Home.css"; // Import CSS file
+import "./Home.css";
 import TTSDataGrid from "../TTSDataGrid/TTSDataGrid";
 import robinLogo from '../../assets/Images/RobinLogo.svg';
+import VoiceCharacterCard from "../VoiceCharacterCard/VoiceCharacterCard";
 
 const Home = () => {
     return (
         <div className="home-container">
-            {/* Header Section */}
             <header className="header-section">
-                {/* Left: Logo Container */}
                 <div className="logo-container">
-                    <img src={robinLogo} alt="Robin Logo" style={{ maxHeight: '200px', width: 'auto' }} ></img>
+                    <img src={robinLogo} alt="Robin Logo"></img>
+                </div>
+                <div className="voice-character-container">
+                    <VoiceCharacterCard
+                        imageUrl="/Avatars/Dorothy.png"
+                        name="Dorothy"
+                        gender="Female"
+                        origin="English (UK)"
+                    />
+                    <VoiceCharacterCard
+                        imageUrl="/Avatars/George.png"
+                        name="George"
+                        gender="Male"
+                        origin="English (US)"
+                    />
                 </div>
 
-                {/* Right: Voice Character Container */}
-                <div className="voice-character-container">Voice Character</div>
             </header>
-
-            {/* Content Section */}
             <main className="content-section">
                 <TTSDataGrid />
             </main>

@@ -1,4 +1,3 @@
-/* Main container for the home page */
 .home-container {
     display: flex;
     flex-direction: column;
@@ -7,42 +6,45 @@
     overflow: hidden;
 }
 
-/* Header Section */
 .header-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    /* Full width */
-    height: 120px;
-    /* Adjust as needed */
-    background: linear-gradient(to right, #717070, #222);
-    /* Dark gradient */
+    height: 160px;
+    margin-top: 20px;
+    /* background: linear-gradient(to right, #717070, #222); */
+    background-color: #1a1a1a;
+
     padding: 0 20px;
     color: #ff9800;
 }
 
-/* Logo Container (Left) */
 .logo-container {
+
+    margin-left: 80px;
     display: flex;
     font-size: 1.5rem;
     font-weight: bold;
 }
 
-/* Voice Character Container (Right) */
 .voice-character-container {
+
     display: flex;
-    /* Takes up available space */
-    text-align: right;
-    /* Aligns text to the right */
-    font-size: 1.2rem;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
 }
 
-/* Content Section */
 .content-section {
     width: 100%;
     background: #1a1a1a;
     color: white;
     padding: 20px;
     overflow-y: auto;
+}
+
+.robin-logo {
+    max-height: 200px;
+    width: auto;
 }
