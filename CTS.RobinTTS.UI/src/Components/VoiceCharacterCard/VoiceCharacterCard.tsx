@@ -25,15 +25,17 @@ const VoiceCharacterCard: React.FC<VoiceCharacterCardProps> = ({
 }) => {
     return (
         <Card className="voice-card">
-            <CardMedia
-                component="img"
-                image={imageUrl}
-                alt={name}
-                className="voice-card-media"
-            />
+            <div className='voice-card-media-wrapper'>
+                <CardMedia
+                    className="voice-card-media"
+                    component="img"
+                    image={imageUrl}
+                    alt={name}
+                />
+            </div>
             <CardContent>
                 <Box className="voice-card-content">
-                    <Typography variant="h6" mb={0.1}>
+                    <Typography variant="h6" mb={1}>
                         {name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
@@ -45,7 +47,18 @@ const VoiceCharacterCard: React.FC<VoiceCharacterCardProps> = ({
                 </Box>
             </CardContent>
 
-            <IconButton className="play-button">
+            <IconButton
+                sx={{
+                    backgroundColor: '#ff9800',
+                    marginLeft: '5px',
+                    color: '#fff',
+                    width: 40,
+                    height: 40,
+                    '&:hover': {
+                        backgroundColor: '#e68900',
+                    }
+                }}
+            >
                 <PlayArrowIcon />
             </IconButton>
         </Card>
