@@ -1,9 +1,13 @@
 // Function to play an audio file from a given URL
-export const playAudio = (audioUrl: string) => {
-    if (!audioUrl) {
-        console.error("No audio URL available.");
+export const playAudio = (audioSource: string) => {
+    if (!audioSource) {
+        console.error("No audio Source available.");
         return;
     }
+
+    const audioUrl = audioSource.startsWith('/audio/')
+        ? `${window.location.origin}${audioSource}`
+        : audioSource;
 
     const audio = new Audio(audioUrl);
     audio.play().catch((error) => console.error("Error playing audio:", error));

@@ -9,6 +9,7 @@ import {
 import IconButton from '@mui/material/IconButton';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import './VoiceCharacterCard.css';
+import { playAudio } from "../../services/utils";
 
 type VoiceCharacterCardProps = {
     imageUrl: string;
@@ -58,6 +59,7 @@ const VoiceCharacterCard: React.FC<VoiceCharacterCardProps> = ({
                         backgroundColor: '#e68900',
                     }
                 }}
+                onClick={() => name === 'Dorothy' && playAudio('/audio/DorothySample.mp3')}
             >
                 <PlayArrowIcon />
             </IconButton>

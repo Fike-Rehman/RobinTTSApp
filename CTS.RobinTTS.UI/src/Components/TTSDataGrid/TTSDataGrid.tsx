@@ -22,7 +22,7 @@ export interface RowData {
 const initialRows: RowData[] = [
     {
         id: 1,
-        script: "Hello world",
+        script: "What is the name of the largest moon in our Solar system?",
         voice: "Dorothy",
         accept: false,
         status: "pending",
