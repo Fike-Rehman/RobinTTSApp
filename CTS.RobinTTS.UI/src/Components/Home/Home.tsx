@@ -8,7 +8,7 @@ const Home = () => {
         <div className="home-container">
             <header className="header-section">
                 <div className="logo-container">
-                    <img src={robinLogo} alt="Robin Logo"></img>
+                    <img className="robin-logo" src={robinLogo} alt="Robin Logo" ></img>
                 </div>
                 <div className="voice-character-container">
                     <VoiceCharacterCard

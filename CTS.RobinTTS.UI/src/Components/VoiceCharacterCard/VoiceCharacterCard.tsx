@@ -8,12 +8,15 @@ import {
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
 import './VoiceCharacterCard.css';
-import { playAudio } from "../../services/utils";
+import useAudioPlayer from "../AudioPlayer/useAudioPlayer.tsx";
+
+type VoiceName = 'George' | 'Dorothy';
 
 type VoiceCharacterCardProps = {
     imageUrl: string;
-    name: string;
+    name: VoiceName;
     gender: string;
     origin: string;
 };
@@ -24,6 +27,16 @@ const VoiceCharacterCard: React.FC<VoiceCharacterCardProps> = ({
     gender,
     origin
 }) => {
+
+    const { isPlaying, play, stop } = useAudioPlayer();
+
+    const handlePlaySampleButtonClick = (name: VoiceName) => {
+        isPlaying ? stop() : play({
+            George: '/audio/GeorgeSample.mp3',
+            Dorothy: '/audio/DorothySample.mp3'
+        }[name]);
+    };
+
     return (
         <Card className="voice-card">
             <div className='voice-card-media-wrapper'>
@@ -59,9 +72,10 @@ const VoiceCharacterCard: React.FC<VoiceCharacterCardProps> = ({
                         backgroundColor: '#e68900',
                     }
                 }}
-                onClick={() => name === 'Dorothy' && playAudio('/audio/DorothySample.mp3')}
+                onClick={() => handlePlaySampleButtonClick(name)}
+                aria-label={isPlaying ? "Pause" : "Play"}
             >
-                <PlayArrowIcon />
+                {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
             </IconButton>
         </Card>
     );
