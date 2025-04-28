@@ -1,11 +1,12 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
-import { Box, Checkbox, MenuItem, Select, Typography } from "@mui/material";
-import { dataGridContainerStyles, dataGridStyles, titleStyles } from "./TTSDataGridStyles";
+import { Box, Button, Checkbox, MenuItem, Select, Tooltip } from "@mui/material";
+import { dataGridContainerStyles, dataGridStyles, importButtonStyles } from "./TTSDataGridStyles";
 import PlayAudioButton from "../PlayAudioButton/PlayAudioButton";
 import { PlayAudioButtonState } from "../../types";
 import { generateAudio } from "../../services/api";
 import { playAudio } from "../../services/utils";
+import { SystemUpdateAlt as ImportIcon } from "@mui/icons-material";
 
 const voices = ["Dorothy", "George"];
 
@@ -102,6 +103,10 @@ const TTSDataGrid = () => {
         }
     };
 
+    const handleImportClick = () => {
+        console.log("Import button clicked.");
+    };
+
     const columns: GridColDef[] = [
         {
             field: "id",
@@ -157,9 +162,23 @@ const TTSDataGrid = () => {
 
     return (
         <Box sx={dataGridContainerStyles}>
-            <Typography variant="h6" sx={titleStyles}>
-                My Data Table
-            </Typography>
+            <Box sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                mb: 2,
+                gap: 1
+            }}>
+                <Tooltip title="Import CSV" arrow>
+                    <Button
+                        variant="contained"
+                        onClick={handleImportClick}
+                        startIcon={<ImportIcon />}
+                        sx={importButtonStyles}
+                    >
+                        Import
+                    </Button>
+                </Tooltip>
+            </Box>
             <DataGrid rows={rows} columns={columns} sx={dataGridStyles} />
         </Box>
     );

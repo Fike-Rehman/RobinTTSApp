@@ -24,7 +24,6 @@ const Home = () => {
                         origin="English (US)"
                     />
                 </div>
-
             </header>
             <main className="content-section">
                 <TTSDataGrid />
