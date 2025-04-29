@@ -1,49 +1,20 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
-import { Box, Button, Checkbox, MenuItem, Select, Tooltip } from "@mui/material";
-import { dataGridContainerStyles, dataGridStyles, importButtonStyles } from "./TTSDataGridStyles";
+import { Box, Checkbox, MenuItem, Select, Tooltip } from "@mui/material";
+import { dataGridContainerStyles, dataGridStyles } from "./TTSDataGridStyles";
 import PlayAudioButton from "../PlayAudioButton/PlayAudioButton";
-import { PlayAudioButtonState } from "../../types";
+import { RowData } from "../../types";
 import { generateAudio } from "../../services/api";
 import { playAudio } from "../../services/utils";
-import { SystemUpdateAlt as ImportIcon } from "@mui/icons-material";
+import CSVImportButton from "../CSVImportButton/CSVImportButton";
+import useCSVImport from "../../hooks/useCSVImport";
 
 const voices = ["Dorothy", "George"];
 
-export interface RowData {
-    id: number;
-    script: string;
-    voice: string;
-    accept: boolean;
-    status: PlayAudioButtonState;
-    audioUrl: string | null;
-    audioBlob: Blob | null;
-}
-
-const initialRows: RowData[] = [
-    {
-        id: 1,
-        script: "What is the name of the largest moon in our Solar system?",
-        voice: "Dorothy",
-        accept: false,
-        status: "pending",
-        audioUrl: null,
-        audioBlob: null
-    },
-    {
-        id: 2,
-        script: "Here I am ",
-        voice: "George",
-        accept: false,
-        status: "pending",
-        audioUrl: null,
-        audioBlob: null
-    }
-];
-
 const TTSDataGrid = () => {
 
-    const [rows, setRows] = useState(initialRows);
+    const [rows, setRows] = useState<RowData[]>([]);
+    const { handleFileUpload, loading, error } = useCSVImport();
 
     const handleCheckboxChange = async (id: number) => {
         setRows((prevRows) =>
@@ -87,7 +58,6 @@ const TTSDataGrid = () => {
         }
     };
 
-
     const handleVoiceChange = (id: number, newVoice: string) => {
         setRows((prevRows) =>
             prevRows.map((row) => (row.id === id ? { ...row, voice: newVoice } : row))
@@ -103,8 +73,16 @@ const TTSDataGrid = () => {
         }
     };
 
-    const handleImportClick = () => {
-        console.log("Import button clicked.");
+    const handleFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        try {
+            const newRows = await handleFileUpload(file);
+            setRows(newRows); // Completely replace existing rows
+        } catch (err) {
+            console.error('Import failed:', error);
+        }
     };
 
     const columns: GridColDef[] = [
@@ -169,14 +147,8 @@ const TTSDataGrid = () => {
                 gap: 1
             }}>
                 <Tooltip title="Import CSV" arrow>
-                    <Button
-                        variant="contained"
-                        onClick={handleImportClick}
-                        startIcon={<ImportIcon />}
-                        sx={importButtonStyles}
-                    >
-                        Import
-                    </Button>
+                    <CSVImportButton onImport={handleFileInputChange}
+                        loading={loading} />
                 </Tooltip>
             </Box>
             <DataGrid rows={rows} columns={columns} sx={dataGridStyles} />
