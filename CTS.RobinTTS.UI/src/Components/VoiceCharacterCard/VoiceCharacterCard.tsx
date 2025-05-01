@@ -1,4 +1,4 @@
-import React from 'react';
+
 import {
     Box,
     Card,
@@ -6,11 +6,8 @@ import {
     CardMedia,
     Typography
 } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
 import './VoiceCharacterCard.css';
-import useAudioPlayer from "../AudioPlayer/useAudioPlayer.tsx";
+import AudioButton from '../AudioButton/AudioButton';
 
 type VoiceName = 'George' | 'Dorothy';
 
@@ -28,14 +25,7 @@ const VoiceCharacterCard: React.FC<VoiceCharacterCardProps> = ({
     origin
 }) => {
 
-    const { isPlaying, play, stop } = useAudioPlayer();
-
-    const handlePlaySampleButtonClick = (name: VoiceName) => {
-        isPlaying ? stop() : play({
-            George: '/audio/GeorgeSample.mp3',
-            Dorothy: '/audio/DorothySample.mp3'
-        }[name]);
-    };
+    const audioUrl = name === 'George' ? '/audio/GeorgeSample.mp3' : '/audio/DorothySample.mp3';
 
     return (
         <Card className="voice-card">
@@ -61,22 +51,12 @@ const VoiceCharacterCard: React.FC<VoiceCharacterCardProps> = ({
                 </Box>
             </CardContent>
 
-            <IconButton
-                sx={{
-                    backgroundColor: '#ff9800',
-                    marginLeft: '5px',
-                    color: '#fff',
-                    width: 40,
-                    height: 40,
-                    '&:hover': {
-                        backgroundColor: '#e68900',
-                    }
-                }}
-                onClick={() => handlePlaySampleButtonClick(name)}
-                aria-label={isPlaying ? "Pause" : "Play"}
-            >
-                {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
-            </IconButton>
+            <AudioButton
+                audioId={`voice-${name}`}
+                audioUrl={audioUrl}
+            // playIcon={<PlayArrowIcon sx={{ color: 'white' }} />}
+            // pauseIcon={<PauseIcon sx={{ color: 'white' }} />}
+            />
         </Card>
     );
 };
