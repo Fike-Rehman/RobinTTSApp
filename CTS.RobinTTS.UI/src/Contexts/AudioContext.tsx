@@ -16,6 +16,7 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
     const audioPlayer = useAudioPlayer()
 
     const [currentAudioId, setCurrentAudioId] = useState<string | null>(null) // Changed to state
+    const [isChangingTrack, setIsChangingTrack] = useState(false)
 
     const play = (audioId: string, url: string) => {
         if (currentAudioId === audioId) {
@@ -23,7 +24,12 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
             audioPlayer.togglePlayPause()
         } else {
             // Stop previous audio and load new
+            setIsChangingTrack(true)
             audioPlayer.stop()
+
+            // Force state update before loading new track
+            setCurrentAudioId(null)
+
             audioPlayer.load(url, {
                 autoplay: true,
                 onend: () => {
@@ -35,13 +41,18 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
                     if (currentAudioId === audioId) setCurrentAudioId(null)
                 }
             })
-            setCurrentAudioId(audioId)
+
+            // Batch state updates
+            setTimeout(() => {
+                setCurrentAudioId(audioId)
+                setIsChangingTrack(false)
+            }, 0)
         }
     }
 
     // Sync state when audio stops naturally or via external controls
     useEffect(() => {
-        if (!audioPlayer.isPlaying && currentAudioId) {
+        if (!audioPlayer.isPlaying && currentAudioId && !isChangingTrack) {
             setCurrentAudioId(null)
         }
     }, [audioPlayer.isPlaying])

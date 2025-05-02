@@ -54,8 +54,6 @@ const VoiceCharacterCard: React.FC<VoiceCharacterCardProps> = ({
             <AudioButton
                 audioId={`voice-${name}`}
                 audioUrl={audioUrl}
-            // playIcon={<PlayArrowIcon sx={{ color: 'white' }} />}
-            // pauseIcon={<PauseIcon sx={{ color: 'white' }} />}
             />
         </Card>
     );
