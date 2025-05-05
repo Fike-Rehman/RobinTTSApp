@@ -1,70 +1,101 @@
 // contexts/AudioContext.tsx
-import { createContext, useContext, ReactNode, useState, useEffect } from 'react'
+import { createContext, useContext, ReactNode, useState, useEffect, useRef, useCallback } from 'react'
 import { useAudioPlayer } from 'react-use-audio-player'
 
 type AudioContextType = {
+
+    // core playback
     play: (audioId: string, url: string) => void
     pause: () => void
     stop: () => void
     currentAudioId: string | null
     isPlaying: boolean
+
+    // Time Management
+    currentTime: number
+    duration: number
 }
 
 const AudioContext = createContext<AudioContextType | null>(null)
 
 export const AudioProvider = ({ children }: { children: ReactNode }) => {
-    const audioPlayer = useAudioPlayer()
-
+    const audio = useAudioPlayer()
     const [currentAudioId, setCurrentAudioId] = useState<string | null>(null) // Changed to state
     const [isChangingTrack, setIsChangingTrack] = useState(false)
 
-    const play = (audioId: string, url: string) => {
+    const [currentTime, setCurrentTime] = useState(0)
+    const [duration, setDuration] = useState(0)
+    const frameRef = useRef<number | undefined>(undefined)
+
+    // Time updates
+    const updateTime = useCallback(() => {
+        setCurrentTime(audio.getPosition())
+        setDuration(audio.duration)
+
+        if (audio.isPlaying) { // Changed to isPlaying
+            frameRef.current = requestAnimationFrame(updateTime)
+        }
+    }, [audio.isPlaying, audio.getPosition, audio.duration])
+
+    useEffect(() => {
+        if (audio.isPlaying) {
+            frameRef.current = requestAnimationFrame(updateTime)
+        }
+        return () => {
+            if (frameRef.current !== undefined) {
+                cancelAnimationFrame(frameRef.current)
+            }
+        }
+    }, [audio.isPlaying, updateTime])
+
+    // Updated play method with useCallback
+    const play = useCallback((audioId: string, url: string) => {
         if (currentAudioId === audioId) {
-            // Toggle play/pause for same audio
-            audioPlayer.togglePlayPause()
+            audio.togglePlayPause();
         } else {
-            // Stop previous audio and load new
-            setIsChangingTrack(true)
-            audioPlayer.stop()
+            setIsChangingTrack(true);
+            audio.stop();
 
-            // Force state update before loading new track
-            setCurrentAudioId(null)
+            setCurrentAudioId(null); // Immediate reset
 
-            audioPlayer.load(url, {
+            audio.load(url, {
                 autoplay: true,
+                onload: () => {
+                    setDuration(audio.duration);
+                    setCurrentAudioId(audioId);
+                },
                 onend: () => {
-                    // Only reset if still the current audio
-                    if (currentAudioId === audioId) setCurrentAudioId(null)
+                    if (currentAudioId === audioId) setCurrentAudioId(null);
                 },
                 onstop: () => {
-                    // Only reset if still the current audio
-                    if (currentAudioId === audioId) setCurrentAudioId(null)
+                    if (currentAudioId === audioId) setCurrentAudioId(null);
                 }
-            })
+            });
 
-            // Batch state updates
             setTimeout(() => {
-                setCurrentAudioId(audioId)
-                setIsChangingTrack(false)
-            }, 0)
+                setCurrentAudioId(audioId);
+                setIsChangingTrack(false);
+            }, 0);
         }
-    }
+    }, [currentAudioId, audio, setIsChangingTrack]);
 
     // Sync state when audio stops naturally or via external controls
     useEffect(() => {
-        if (!audioPlayer.isPlaying && currentAudioId && !isChangingTrack) {
+        if (!audio.isPlaying && currentAudioId && !isChangingTrack) {
             setCurrentAudioId(null)
         }
-    }, [audioPlayer.isPlaying])
+    }, [audio.isPlaying])
 
     return (
         <AudioContext.Provider
             value={{
                 play,
-                pause: audioPlayer.pause,
-                stop: audioPlayer.stop,
+                pause: audio.pause,
+                stop: audio.stop,
                 currentAudioId,
-                isPlaying: audioPlayer.isPlaying
+                isPlaying: audio.isPlaying,
+                currentTime: audio.getPosition(),
+                duration: audio.duration
             }}
         >
             {children}

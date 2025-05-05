@@ -8,6 +8,7 @@ import { generateAudio } from "../../services/api";
 import { playAudio } from "../../services/utils";
 import CSVImportButton from "../CSVImportButton/CSVImportButton";
 import useCSVImport from "../../hooks/useCSVImport";
+import { AudioController } from "../AudioController/AudioController";
 
 const voices = ["Dorothy", "George"];
 
@@ -129,10 +130,11 @@ const TTSDataGrid = () => {
             headerName: "Status",
             width: 150,
             renderCell: (params) => (
-                <PlayAudioButton
-                    state={params.row.status}
-                    onClick={() => handlePlayAudio(params.row.id)}
-                />
+                // <PlayAudioButton
+                //     state={params.row.status}
+                //     onClick={() => handlePlayAudio(params.row.id)}
+                // />
+                <AudioController audioId="1" audioUrl={params.row.audioUrl} disabled={false}></AudioController>
 
             )
         },
@@ -146,6 +148,7 @@ const TTSDataGrid = () => {
                 mb: 2,
                 gap: 1
             }}>
+                <AudioController audioId="1" audioUrl="/audio/GeorgeSample.mp3" disabled={false}></AudioController>
                 <Tooltip title="Import CSV" arrow>
                     <CSVImportButton onImport={handleFileInputChange}
                         loading={loading} />
