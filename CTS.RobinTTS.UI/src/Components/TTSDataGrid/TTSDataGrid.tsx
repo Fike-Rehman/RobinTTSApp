@@ -90,7 +90,7 @@ const TTSDataGrid = () => {
         {
             field: "id",
             headerName: "Id",
-            width: 50,
+            width: 40,
             editable: false
         },
         {
@@ -102,7 +102,7 @@ const TTSDataGrid = () => {
         {
             field: "voice",
             headerName: "Voice Name",
-            width: 150,
+            width: 120,
             renderCell: (params) => (
                 <Select
                     value={params.row.voice}
@@ -118,9 +118,9 @@ const TTSDataGrid = () => {
             ),
         },
         {
-            field: "accept",
-            headerName: "Accept",
-            width: 80,
+            field: "approve",
+            headerName: "Approve",
+            width: 90,
             renderCell: (params) => (
                 <Checkbox onChange={() => handleCheckboxChange(params.row.id)} />
             )

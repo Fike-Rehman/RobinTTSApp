@@ -23,6 +23,7 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
     const [currentAudioId, setCurrentAudioId] = useState<string | null>(null) // Changed to state
     const [isChangingTrack, setIsChangingTrack] = useState(false)
 
+    // Time Management used in AudioController
     const [currentTime, setCurrentTime] = useState(0)
     const [duration, setDuration] = useState(0)
     const frameRef = useRef<number | undefined>(undefined)
