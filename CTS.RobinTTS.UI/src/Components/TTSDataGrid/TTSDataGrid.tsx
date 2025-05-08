@@ -1,14 +1,11 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
-import { Box, Checkbox, MenuItem, Select, Tooltip } from "@mui/material";
+import { Box, MenuItem, Select, Tooltip } from "@mui/material";
 import { dataGridContainerStyles, dataGridStyles } from "./TTSDataGridStyles";
-import PlayAudioButton from "../PlayAudioButton/PlayAudioButton";
 import { RowData } from "../../types";
-import { generateAudio } from "../../services/api";
-import { playAudio } from "../../services/utils";
 import CSVImportButton from "../CSVImportButton/CSVImportButton";
 import useCSVImport from "../../hooks/useCSVImport";
-import { AudioController } from "../AudioController/AudioController";
+import AudioController from "../AudioController/AudioController";
 import AudioGenerator from "../AudioGenerator/AudioGenerator";
 
 const voices = ["Dorothy", "George"];
@@ -18,51 +15,6 @@ const TTSDataGrid = () => {
     const [rows, setRows] = useState<RowData[]>([]);
     const { handleFileUpload, loading, error } = useCSVImport();
 
-    // const [testUrl, setTestUrl] = useState<string>("");
-    // const [resetKey, setResetKey] = useState<number>(0);
-
-    //  const handleCheckboxChange = async (id: number) => {
-    //     setRows((prevRows) =>
-    //          prevRows.map((row) =>
-    //              row.id === id ? { ...row, accept: true, status: "generating" } : row
-    //          )
-    //      );
-
-    //     const row = rows.find((row) => row.id === id);
-    //     if (!row) return;
-
-    //     const result = await generateAudio(row.script, row.voice);
-    //     if (result) {
-    //         setRows((prevRows) =>
-    //             prevRows.map((row) =>
-    //                 row.id === id
-    //                     ? {
-    //                         ...row,
-    //                         status: "ready",
-    //                         audioUrl: result.audioUrl,  // Store in row
-    //                         audioBlob: result.audioBlob // Store in row
-    //                     }
-    //                     : row
-    //             )
-    //         );
-    //     } else {
-    //         // Failure: Roll back to "pending"
-    //         setRows((prevRows) =>
-    //             prevRows.map((row) =>
-    //                 row.id === id
-    //                     ? {
-    //                         ...row,
-    //                         status: "pending", // Roll back
-    //                         audioUrl: null,    // Clear
-    //                         audioBlob: null,   // Clear
-    //                     }
-    //                     : row
-    //             )
-    //         );
-    //         console.error(`Audio generation failed for row ${id}.`);
-    //     }
-    // };
-
     const handleVoiceChange = (id: number, newVoice: string) => {
         setRows((prevRows) =>
             prevRows.map((row) => (row.id === id ? { ...row, voice: newVoice } : row))
@@ -71,7 +23,7 @@ const TTSDataGrid = () => {
 
     // const handlePlayAudio = (id: number) => {
     //     const row = rows.find((row) => row.id === id);
-    //     if (row && row.audioUrl !== null) {  // Explicit null check
+    //     if (row && row.audioUrl !== null) {
     //         playAudio(row.audioUrl);
     //     } else {
     //         console.error("Audio not yet generated for row:", id);
@@ -91,15 +43,14 @@ const TTSDataGrid = () => {
     };
 
     const handleComplete = (id: number, audioUrl: string) => {
-        setRows((prev) =>
-            prev.map((r) =>
-                r.id === id
-                    ? { ...r, audioUrl }
-                    : r
+        setRows((prevRows) =>
+            prevRows.map((row) =>
+                row.id === id
+                    ? { ...row, enablePlayback: true, audioUrl: audioUrl }
+                    : row
             )
         );
     };
-
 
     const columns: GridColDef[] = [
         {
@@ -137,7 +88,6 @@ const TTSDataGrid = () => {
             headerName: "Approve",
             width: 90,
             renderCell: (params) => (
-                // <Checkbox onChange={() => handleCheckboxChange(params.row.id)} />
                 <AudioGenerator
                     script={params.row.script}
                     voiceName={"Dorothy"}
@@ -148,20 +98,17 @@ const TTSDataGrid = () => {
             )
         },
         {
-            field: "status",
-            headerName: "Status",
+            field: "audio",
+            headerName: "Audio",
             width: 150,
-            renderCell: (params) => (
-                // <PlayAudioButton
-                //     state={params.row.status}
-                //     onClick={() => handlePlayAudio(params.row.id)}
-                // />
-                <AudioController audioId={params.row.id} audioUrl={params.row.audioUrl} disabled={false}></AudioController>
-            )
+            renderCell: (params) => {
+
+                return (
+                    <AudioController audioId={params.row.id.toString()} audioUrl={params.row.audioUrl} disabled={!params.row.enablePlayback}></AudioController>
+                )
+            },
         },
     ];
-
-
     return (
         <Box sx={dataGridContainerStyles}>
             <Box sx={{
@@ -171,7 +118,7 @@ const TTSDataGrid = () => {
                 gap: 1
             }}>
                 {/* <AudioGenerator script={"Hello, this is another test script for audio generation."} voiceName={"Dorothy"} resetKey={1} onComplete={handleComplete}></AudioGenerator> */}
-                <AudioController audioId="1" audioUrl="/audio/GeorgeSample.mp3" disabled={false}></AudioController>
+                <AudioController audioId="1100" audioUrl="/audio/GeorgeSample.mp3" disabled={false}></AudioController>
                 <Tooltip title="Import CSV" arrow>
                     <CSVImportButton onImport={handleFileInputChange}
                         loading={loading} />

@@ -21,8 +21,7 @@ const useCSVImport = () => {
                 id: index + 1, // Sequential IDs starting at 1
                 script: script,
                 voice: "Dorothy", // Default voice
-                accept: false,
-                status: "pending",
+                enablePlayback: false,
                 audioUrl: null,
                 audioBlob: null
             };

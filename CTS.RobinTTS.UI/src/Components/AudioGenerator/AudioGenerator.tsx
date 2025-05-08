@@ -9,9 +9,7 @@ export interface AudioGeneratorProps {
     script: string;
     voiceName: string;
     resetKey: any;
-    /** Called when audio generation starts */
     onStart?: () => void;
-    /** Called once audio is generated; returns the audio URL */
     onComplete: (audioUrl: string) => void;
 }
 
@@ -26,7 +24,7 @@ const AudioGenerator: React.FC<AudioGeneratorProps> = ({ script, voiceName, rese
                     onStart?.();
                     const result = await generateAudio(script, voiceName);
                     if (!result) throw new Error('No audio returned from generateAudio');
-                    const { audioUrl } = result;
+                    const audioUrl = result.audioUrl;
                     dispatch({ type: 'SUCCESS', payload: { audioUrl } } as Action);
                     onComplete(audioUrl);
                 } catch (err) {
@@ -45,9 +43,10 @@ const AudioGenerator: React.FC<AudioGeneratorProps> = ({ script, voiceName, rese
     if (state === 'idle') {
         content = (
             <Tooltip title="Generate Audio">
-                <IconButton onClick={handleStart} aria-label="Generate Audio" size="small">
+                <span><IconButton onClick={handleStart} aria-label="Generate Audio" size="small">
                     <SyncRounded color="primary" sx={{ fontSize: 24 }} />
-                </IconButton>
+                </IconButton></span>
+
             </Tooltip>
         );
     } else if (state === 'loading') {
@@ -55,9 +54,11 @@ const AudioGenerator: React.FC<AudioGeneratorProps> = ({ script, voiceName, rese
     } else { // ready
         content = (
             <Tooltip title="Audio Ready">
-                <IconButton disabled aria-label="Audio Ready" size="small">
-                    <PublishedWithChangesRounded color="success" sx={{ fontSize: 24 }} />
-                </IconButton>
+                <span>
+                    <IconButton disabled aria-label="Audio Ready" size="small">
+                        <PublishedWithChangesRounded color="success" sx={{ fontSize: 24 }} />
+                    </IconButton>
+                </span>
             </Tooltip>
         );
     }
