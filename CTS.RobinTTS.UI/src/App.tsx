@@ -1,14 +1,5 @@
-import Home from "./Components/Home/Home";
-import { AudioProvider } from './Contexts/AudioContext'
-
-
-// function App() {
-//   return (
-//     <div>
-//       <Home />
-//     </div>
-//   );
-// }
+import Home from './Components/Home/Home';
+import { AudioProvider } from './Contexts/AudioContext';
 
 function App() {
   return (
@@ -17,7 +8,7 @@ function App() {
         <Home />
       </div>
     </AudioProvider>
-  )
+  );
 }
 
 export default App;

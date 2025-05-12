@@ -8,9 +8,16 @@ type State = 'idle' | 'loading' | 'ready';
 /**
  * Actions that transition the AudioGenerator state machine
  */
-interface StartAction { type: 'START'; }
-interface SuccessAction { type: 'SUCCESS'; payload: { audioUrl: string }; }
-interface ResetAction { type: 'RESET'; }
+interface StartAction {
+  type: 'START';
+}
+interface SuccessAction {
+  type: 'SUCCESS';
+  payload: { audioUrl: string };
+}
+interface ResetAction {
+  type: 'RESET';
+}
 
 type Action = StartAction | SuccessAction | ResetAction;
 
@@ -21,30 +28,30 @@ type Action = StartAction | SuccessAction | ResetAction;
  * - RESET  → idle
  */
 function audioReducer(state: State, action: Action): State {
-    switch (action.type) {
-        case 'START':
-            return 'loading';
-        case 'SUCCESS':
-            return 'ready';
-        case 'RESET':
-            return 'idle';
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case 'START':
+      return 'loading';
+    case 'SUCCESS':
+      return 'ready';
+    case 'RESET':
+      return 'idle';
+    default:
+      return state;
+  }
 }
 
 /**
  * Custom hook that exposes state, dispatch, and reset logic for AudioGenerator
  */
 export function useAudioGeneratorReducer(resetKey: any) {
-    const [state, dispatch] = useReducer(audioReducer, 'idle');
+  const [state, dispatch] = useReducer(audioReducer, 'idle');
 
-    // Reset back to idle whenever resetKey changes
-    useEffect(() => {
-        dispatch({ type: 'RESET' });
-    }, [resetKey]);
+  // Reset back to idle whenever resetKey changes
+  useEffect(() => {
+    dispatch({ type: 'RESET' });
+  }, [resetKey]);
 
-    return { state, dispatch };
+  return { state, dispatch };
 }
 
 export type { State, Action, StartAction, SuccessAction, ResetAction };
