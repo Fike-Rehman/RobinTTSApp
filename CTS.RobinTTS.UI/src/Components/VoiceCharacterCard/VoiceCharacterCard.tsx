@@ -7,6 +7,7 @@ import {
     Typography
 } from '@mui/material';
 import './VoiceCharacterCard.css';
+import PlayAudioButton from './PlayAudioButton';
 // import AudioButton from '../AudioButton/AudioButton';
 
 type VoiceName = 'George' | 'Dorothy';
@@ -51,10 +52,7 @@ const VoiceCharacterCard: React.FC<VoiceCharacterCardProps> = ({
                 </Box>
             </CardContent>
 
-            {/* <AudioButton
-                audioId={`voice-${name}`}
-                audioUrl={audioUrl}
-            /> */}
+            <PlayAudioButton audioId={name} audioUrl={audioUrl} />
         </Card>
     );
 };

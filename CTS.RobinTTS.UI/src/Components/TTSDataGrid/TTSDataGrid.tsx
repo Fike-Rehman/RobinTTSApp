@@ -21,15 +21,6 @@ const TTSDataGrid = () => {
         );
     };
 
-    // const handlePlayAudio = (id: number) => {
-    //     const row = rows.find((row) => row.id === id);
-    //     if (row && row.audioUrl !== null) {
-    //         playAudio(row.audioUrl);
-    //     } else {
-    //         console.error("Audio not yet generated for row:", id);
-    //     }
-    // };
-
     const handleFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -117,8 +108,8 @@ const TTSDataGrid = () => {
                 mb: 2,
                 gap: 1
             }}>
-                {/* <AudioGenerator script={"Hello, this is another test script for audio generation."} voiceName={"Dorothy"} resetKey={1} onComplete={handleComplete}></AudioGenerator> */}
-                <AudioController audioId="1100" audioUrl="/audio/GeorgeSample.mp3" disabled={false}></AudioController>
+
+                {/* <AudioController audioId="1100" audioUrl="/audio/GeorgeSample.mp3" disabled={false}></AudioController> */}
                 <Tooltip title="Import CSV" arrow>
                     <CSVImportButton onImport={handleFileInputChange}
                         loading={loading} />
