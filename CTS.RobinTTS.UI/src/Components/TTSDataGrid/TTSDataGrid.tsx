@@ -78,8 +78,8 @@ const TTSDataGrid = () => {
       ),
     },
     {
-      field: 'approve',
-      headerName: 'Approve',
+      field: 'generate',
+      headerName: 'Generate',
       width: 90,
       renderCell: (params) => (
         <AudioGenerator
@@ -90,6 +90,7 @@ const TTSDataGrid = () => {
           onComplete={(url) => handleComplete(params.row.id, url)}
         />
       ),
+      cellClassName: "controls-column",
     },
     {
       field: 'audio',
@@ -104,6 +105,7 @@ const TTSDataGrid = () => {
           ></AudioController>
         );
       },
+      cellClassName: "controls-column",
     },
   ];
   return (
@@ -116,7 +118,6 @@ const TTSDataGrid = () => {
           gap: 1,
         }}
       >
-        {/* <AudioController audioId="1100" audioUrl="/audio/GeorgeSample.mp3" disabled={false}></AudioController> */}
         <Tooltip title="Import CSV" arrow>
           <CSVImportButton onImport={handleFileInputChange} loading={loading} />
         </Tooltip>

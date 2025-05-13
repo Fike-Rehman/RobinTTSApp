@@ -57,4 +57,11 @@ export const dataGridStyles = {
     width: '2px',
     backgroundColor: '#ff9800',
   },
+
+  '& .controls-column': {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+  }
 };
