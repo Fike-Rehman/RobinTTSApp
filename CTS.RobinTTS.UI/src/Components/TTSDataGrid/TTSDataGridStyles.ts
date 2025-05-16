@@ -73,3 +73,28 @@ export const dataGridStyles = {
     border: '2px solid #ff9800',
   },
 };
+
+export const voiceImageStyle = {
+  width: 36,
+  height: 36,
+  objectFit: 'cover',
+};
+
+export const voiceSelectStyles = {
+  '& .MuiOutlinedInput-notchedOutline': {
+    border: 'none',
+  },
+  p: 0,
+  height: '100%',
+  '& .MuiSelect-select': {
+    display: 'flex',
+    alignItems: 'center',
+    py: 0,
+  },
+};
+
+export const voiceRenderImageStyle = {
+  width: 36,
+  height: 36,
+  objectFit: 'cover',
+};

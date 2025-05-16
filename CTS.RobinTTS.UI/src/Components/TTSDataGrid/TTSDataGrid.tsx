@@ -1,7 +1,12 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { Box, MenuItem, Select, Tooltip, Typography } from '@mui/material';
-import { dataGridContainerStyles, dataGridStyles } from './TTSDataGridStyles';
+import {
+  dataGridContainerStyles,
+  dataGridStyles,
+  voiceImageStyle,
+  voiceSelectStyles,
+} from './TTSDataGridStyles';
 import { RowData } from '../../types';
 import CSVImportButton from '../CSVImportButton/CSVImportButton';
 import useCSVImport from '../../hooks/useCSVImport';
@@ -70,18 +75,7 @@ const TTSDataGrid = () => {
           displayEmpty
           fullWidth
           variant="outlined"
-          sx={{
-            '& .MuiOutlinedInput-notchedOutline': {
-              border: 'none',
-            },
-            p: 0,
-            height: '100%',
-            '& .MuiSelect-select': {
-              display: 'flex',
-              alignItems: 'center',
-              py: 0,
-            },
-          }}
+          sx={voiceSelectStyles}
           renderValue={(selected) =>
             selected ? (
               <Tooltip title={selected}>
@@ -89,11 +83,7 @@ const TTSDataGrid = () => {
                   component="img"
                   src={`/Avatars/${selected}.png`}
                   alt={selected}
-                  sx={{
-                    width: 36,
-                    height: 36,
-                    objectFit: 'cover',
-                  }}
+                  sx={voiceImageStyle}
                 />
               </Tooltip>
             ) : (
