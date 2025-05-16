@@ -63,5 +63,13 @@ export const dataGridStyles = {
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
-  }
+  },
+
+  '& .voice-thumbnail': {
+    width: '32px',
+    height: '32px',
+    borderRadius: '50%',
+    objectFit: 'cover',
+    border: '2px solid #ff9800',
+  },
 };

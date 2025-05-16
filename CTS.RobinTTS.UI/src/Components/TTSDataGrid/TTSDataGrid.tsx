@@ -1,6 +1,6 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
-import { Box, MenuItem, Select, Tooltip } from '@mui/material';
+import { Box, MenuItem, Select, Tooltip, Typography } from '@mui/material';
 import { dataGridContainerStyles, dataGridStyles } from './TTSDataGridStyles';
 import { RowData } from '../../types';
 import CSVImportButton from '../CSVImportButton/CSVImportButton';
@@ -67,11 +67,56 @@ const TTSDataGrid = () => {
         <Select
           value={params.row.voice}
           onChange={(e) => handleVoiceChange(params.row.id, e.target.value)}
+          displayEmpty
           fullWidth
+          variant="outlined"
+          sx={{
+            '& .MuiOutlinedInput-notchedOutline': {
+              border: 'none',
+            },
+            p: 0,
+            height: '100%',
+            '& .MuiSelect-select': {
+              display: 'flex',
+              alignItems: 'center',
+              py: 0,
+            },
+          }}
+          renderValue={(selected) =>
+            selected ? (
+              <Tooltip title={selected}>
+                <Box
+                  component="img"
+                  src={`/Avatars/${selected}.png`}
+                  alt={selected}
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    objectFit: 'cover',
+                  }}
+                />
+              </Tooltip>
+            ) : (
+              <Typography variant="body2" sx={{ color: '#888' }}>
+                Select Voice
+              </Typography>
+            )
+          }
         >
           {voices.map((voice) => (
             <MenuItem key={voice} value={voice}>
-              {voice}
+              <Box display="flex" alignItems="top">
+                <img
+                  src={`/Avatars/${voice}.png`}
+                  alt={voice}
+                  style={{ objectFit: 'cover' }}
+                  width={36}
+                  height={36}
+                />
+                <Typography variant="body2" sx={{ ml: 1 }}>
+                  {voice}
+                </Typography>
+              </Box>
             </MenuItem>
           ))}
         </Select>
@@ -85,12 +130,12 @@ const TTSDataGrid = () => {
         <AudioGenerator
           script={params.row.script}
           voiceName={'Dorothy'}
-          resetKey={params.row.script} // resets if script cell is edited
+          resetKey={params.row.script}
           onStart={() => console.log('Row', params.row.id, 'started')}
           onComplete={(url) => handleComplete(params.row.id, url)}
         />
       ),
-      cellClassName: "controls-column",
+      cellClassName: 'controls-column',
     },
     {
       field: 'audio',
@@ -105,7 +150,7 @@ const TTSDataGrid = () => {
           ></AudioController>
         );
       },
-      cellClassName: "controls-column",
+      cellClassName: 'controls-column',
     },
   ];
   return (
