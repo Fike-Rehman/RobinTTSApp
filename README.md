@@ -75,7 +75,7 @@ Explore Zonos further on their [official website](https://zonostts.com/).
    - For the frontend:
 
      ```bash
-     cd frontend
+     cd CTS.RobinTTS.UI
      npm install
      npm run start
      ```
