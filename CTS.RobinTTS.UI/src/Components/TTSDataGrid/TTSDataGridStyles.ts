@@ -1,7 +1,6 @@
 export const dataGridContainerStyles = {
   width: '100%',
   bgcolor: '#1e1e1e',
-  // borderRadius: 4,
   p: 3,
   minHeight: 400,
 };

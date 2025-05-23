@@ -119,7 +119,7 @@ const TTSDataGrid = () => {
       renderCell: (params) => (
         <AudioGenerator
           script={params.row.script}
-          voiceName={'Dorothy'}
+          voiceName={params.row.voice}
           resetKey={params.row.script}
           onStart={() => console.log('Row', params.row.id, 'started')}
           onComplete={(url) => handleComplete(params.row.id, url)}
@@ -129,7 +129,7 @@ const TTSDataGrid = () => {
     },
     {
       field: 'audio',
-      headerName: 'Audio',
+      headerName: 'Audio Playback',
       width: 150,
       renderCell: (params) => {
         return (
