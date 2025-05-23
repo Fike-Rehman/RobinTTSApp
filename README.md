@@ -104,7 +104,7 @@ To switch from ElevenLabs to Zonos:
 
 ## 📸 Screenshots
 
-![Main UI](Images/MainUI.png)
+![Main UI](MainUI.png)
 
 ---
 
